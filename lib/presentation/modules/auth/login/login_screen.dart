@@ -23,8 +23,8 @@ class LoginScreen extends GetView<LoginController> {
     if (kDebugMode) {
       // controller.emailText.text = 'seyi@gmail.com';
       // controller.passText.text = 'seyi123';
-      controller.emailText.text = 'Avan@gmail.com';
-      controller.passText.text = 'SEYI';
+      controller.emailText.text = 'test@gmail.com';
+      controller.passText.text = 'Test1234';
     }
 
     return Scaffold(

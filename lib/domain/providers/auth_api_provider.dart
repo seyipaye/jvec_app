@@ -21,14 +21,14 @@ class AuthProvider extends GetConnect {
   void onInit() {
     httpClient.baseUrl = AppStrings.baseUrl;
 
-    httpClient.defaultDecoder = (val) {
-      if (val is String) {
-        if (val.contains('Internal Server Error'))
-          val = "Oops, An error occured. Please try that again";
-        return ApiResponse(true, status: false, message: val);
-      }
-      return ApiResponse.fromJson(val);
-    };
+    // httpClient.defaultDecoder = (val) {
+    //   if (val is String) {
+    //     if (val.contains('Internal Server Error'))
+    //       val = "Oops, An error occured. Please try that again";
+    //     return ApiResponse(true, status: false, message: val);
+    //   }
+    //   return ApiResponse.fromJson(val);
+    // };
 
     // Http and websockets if used with no [httpClient] instance
 
@@ -53,7 +53,7 @@ class AuthProvider extends GetConnect {
       };
 
       //  try {
-      resp = await post<ApiResponse>('/$_userType/refresh-token', body);
+      resp = await post ('/$_userType/refresh-token', body);
       response = getErrorMessage(resp);
       if (response != null) {
         AuthRepository.instance.user.value = User();
@@ -88,7 +88,7 @@ class AuthProvider extends GetConnect {
     httpClient.timeout = Duration(seconds: 30);
 
     // Does Rubish
-    // httpClient.addResponseModifier<ApiResponse>(
+    // httpClient.addResponseModifier (
     //   (request, response) {
     //     print(request.decoder.toString());
     //     print(response.bodyString);
@@ -100,7 +100,7 @@ class AuthProvider extends GetConnect {
   }
 
   Future<User> fetchUser() {
-    return get<ApiResponse>('/auth/user').then(
+    return get('/auth/user').then(
       (value) {
         var response;
 
@@ -118,7 +118,7 @@ class AuthProvider extends GetConnect {
   }
 
   Future<UserData> fetchUserData() {
-    return get<ApiResponse>('/auth/user-data').then(
+    return get('/auth/user-data').then(
       (value) {
         var response;
 
@@ -136,7 +136,7 @@ class AuthProvider extends GetConnect {
   }
 
   Future<String?> setPassword(String email, password, otp) {
-    return post<ApiResponse>('auth/$_userType/reset-password', {
+    return post('auth/$_userType/reset-password', {
       'email': email,
       'password': password,
       'otp': otp,
@@ -159,7 +159,7 @@ class AuthProvider extends GetConnect {
 
   // Working
   Future<String?> resetPassword(String email, newPassword, otp) {
-    return post<ApiResponse>('/$_userType/reset-password/otp', {
+    return post('/$_userType/reset-password/otp', {
       'email': email,
       'newPassword': newPassword,
       'otp': otp,
@@ -187,7 +187,7 @@ class AuthProvider extends GetConnect {
       "new_password": newPassword,
     };
 
-    return post<ApiResponse>('/auth/change-password', body).then(
+    return post('/auth/change-password', body).then(
       (value) {
         var response;
 
@@ -207,7 +207,7 @@ class AuthProvider extends GetConnect {
   }
 
   // Future<String> sendPasswordResetOtp(String email) {
-  //   return post<ApiResponse>('auth/$_userType/resend_verification_email', {
+  //   return post ('auth/$_userType/resend_verification_email', {
   //     'email': email,
   //   }).then(
   //     (value) {
@@ -228,7 +228,7 @@ class AuthProvider extends GetConnect {
 
   // Working
   Future<String> forgotPassword(String email) {
-    return post<ApiResponse>('/$_userType/forgot-password', {
+    return post('/$_userType/forgot-password', {
       'email': email,
     }).then(
       (value) {
@@ -252,7 +252,7 @@ class AuthProvider extends GetConnect {
     required String email,
     required String otp,
   }) {
-    return post<ApiResponse>('/$_userType/verify-account', {
+    return post('/$_userType/verify-account', {
       "email": email,
       "otp": otp,
     }).then(
@@ -275,7 +275,7 @@ class AuthProvider extends GetConnect {
   Future<String> resendOtp(
     String email,
   ) {
-    return post<ApiResponse>('/$_userType/resend-verification-otp', {
+    return post('/$_userType/resend-verification-otp', {
       "email": email,
     }).then(
       (value) {
@@ -295,7 +295,7 @@ class AuthProvider extends GetConnect {
 
   // Working
   Future<String> sendPinOtp() {
-    return get<ApiResponse>('/$_userType/$_id/wallet/forgot-pin').then(
+    return get('/$_userType/$_id/wallet/forgot-pin').then(
       (value) {
         var response;
 
@@ -312,7 +312,7 @@ class AuthProvider extends GetConnect {
   }
 
   Future<String> submitPinOtp(String otp) {
-    return post<ApiResponse>('/$_userType/wallet/reset-pin/otp', {
+    return post('/$_userType/wallet/reset-pin/otp', {
       "vendorId": _id,
       "otp": otp,
     }).then(
@@ -345,12 +345,13 @@ class AuthProvider extends GetConnect {
   "phone": "string",
   "password": "string"
 } */
-    return post<ApiResponse>('/auth/signup', {
+    return post('/api/authentication/register/', {
       "email": email.toLowerCase(),
-      "name": name,
-      "surname": surname,
-      "phone": phone,
+      "first_name": name,
+      "last_name": surname,
+      "username": phone,
       "password": password,
+      "confirm_password": password
     }).then(
       (value) {
         var response;
@@ -360,7 +361,71 @@ class AuthProvider extends GetConnect {
         if (response != null) {
           throw (response);
         } else {
-          response = value.body?.message;
+          response = value.bodyString;
+        }
+
+        return response;
+      },
+    );
+  }
+
+  Future<String> save_contact(
+    String first_name,
+    String last_name,
+    String phone_number,
+  ) {
+/*     {
+  "email": "seyi@gmail.com",
+  "name": "string",
+  "surname": "string",
+  "phone": "string",
+  "password": "string"
+} */
+
+    return post('/api/contacts/create/', {
+      "first_name": first_name,
+      "last_name": last_name,
+      "phone_number": phone_number,
+    }).then(
+      (value) {
+        var response;
+
+        //Check for error
+        response = getErrorMessage(value);
+        if (response != null) {
+          throw (response);
+        } else {
+          response = value.bodyString;
+        }
+
+        return response;
+      },
+    );
+  }
+
+  Future<Contacts?> get_contacts() {
+/*     {
+  "email": "seyi@gmail.com",
+  "name": "string",
+  "surname": "string",
+  "phone": "string",
+  "password": "string"
+} */
+
+    return get(
+      '/api/contacts/list/',
+    ).then(
+      (value) {
+        var response;
+
+        //Check for error
+        response = getErrorMessage(value);
+        if (response != null) {
+          throw (response);
+        } else {
+          response = (value.body!['data'] as List<dynamic>)
+              .map((e) => Contact.fromJson(e as Map<String, dynamic>))
+              .toList();
         }
 
         return response;
@@ -373,7 +438,7 @@ class AuthProvider extends GetConnect {
     required String password,
   }) {
     print(identifier + password);
-    return post<ApiResponse>('/auth/login', {
+    return post('/auth/login', {
       "identifier": identifier.toLowerCase(),
       "password": password,
     }).then(
@@ -396,12 +461,12 @@ class AuthProvider extends GetConnect {
     );
   }
 
-  Future<User> login({
+  Future<Token> login({
     required String identifier,
     required String password,
   }) {
-    return post<ApiResponse>('/auth/login', {
-      "identifier": identifier.toLowerCase(),
+    return post('/api/authentication/login/', {
+      "email": identifier.toLowerCase(),
       "password": password,
     }).then(
       (value) {
@@ -414,8 +479,7 @@ class AuthProvider extends GetConnect {
         if (response != null) {
           throw (response);
         } else {
-          response = User.fromJsonWithToken(
-              value.body?.data['user'], value.body?.data['token']);
+          response = Token.fromJson(value.body?['data']['token']);
         }
 
         return response;
@@ -424,7 +488,7 @@ class AuthProvider extends GetConnect {
   }
 
   Future<String?> get_code() {
-    return get<ApiResponse>('/auth/code').then(
+    return get('/auth/code').then(
       (value) {
         var response;
 
@@ -446,7 +510,7 @@ class AuthProvider extends GetConnect {
       "device_token": token,
     };
 
-    return post<ApiResponse>('/auth/upload_token', body).then(
+    return post('/auth/upload_token', body).then(
       (value) {
         var response;
         //Check for error
@@ -467,7 +531,7 @@ class AuthProvider extends GetConnect {
     required String id,
     required num amount,
   }) {
-    return post<ApiResponse>('/payments/pay/{$id}?amount=$amount', {}).then(
+    return post('/payments/pay/{$id}?amount=$amount', {}).then(
       (value) {
         var response;
 
@@ -488,7 +552,7 @@ class AuthProvider extends GetConnect {
     required int plan_id,
     required int discount_id,
   }) {
-    return post<ApiResponse>('/plans/purchase', {
+    return post('/plans/purchase', {
       "plan_id": plan_id,
       'discount_id': discount_id,
     }).then(
@@ -511,7 +575,7 @@ class AuthProvider extends GetConnect {
   Future<String> topUp({
     required num amount,
   }) {
-    return post<ApiResponse>('/payments/top-up?amount=$amount', {}).then(
+    return post('/payments/top-up?amount=$amount', {}).then(
       (value) {
         var response;
 
@@ -552,7 +616,7 @@ class AuthProvider extends GetConnect {
     };
 
     body.addIf(referrer.isNotEmpty, 'referrer', referrer);
-    return post<ApiResponse>('/$_userType/register', body).then(
+    return post ('/$_userType/register', body).then(
       (value) {
         var response;
 
@@ -570,7 +634,7 @@ class AuthProvider extends GetConnect {
   } */
 /* 
   Future<User> delCartItem({required String cartId, required UserType type}) {
-    return post<ApiResponse>('/$_userType/$_id/cart/$cartId', {}).then(
+    return post ('/$_userType/$_id/cart/$cartId', {}).then(
       (value) {
         var response;
 
@@ -593,7 +657,7 @@ class AuthProvider extends GetConnect {
       'email': email,
       'password': password,
     };
-    return post<ApiResponse>('/$_userType/login', body).then(
+    return post ('/$_userType/login', body).then(
       (value) {
         var response;
 
@@ -615,7 +679,7 @@ class AuthProvider extends GetConnect {
   }
  */
 /*   Future<User> contactSupport(name, email, message) {
-    return post<ApiResponse>('/contact-support', {
+    return post ('/contact-support', {
       'name': name,
       'email': email,
       'message': message,
@@ -643,7 +707,7 @@ class AuthProvider extends GetConnect {
   Future<String?> completeRestaurantProfile(bool status) {
     var body = {"completedProfile": "$status"};
 
-    return put<ApiResponse>('/$_userType/$_id/completed-profile', body).then(
+    return put('/$_userType/$_id/completed-profile', body).then(
       (value) {
         var response;
 
@@ -663,7 +727,7 @@ class AuthProvider extends GetConnect {
   // Working
   Future<String> fetchAccountName(
       String accountNumber, String bankCode, String vendorId) {
-    return get<ApiResponse>(
+    return get(
       '/$_userType/$vendorId/banks/verify-account?bankCode=$bankCode&accountNumber=$accountNumber',
     ).then(
       (value) {
@@ -684,7 +748,7 @@ class AuthProvider extends GetConnect {
   }
 
   Future<String> fetcxhWallet(String limit, String sort, String vendorId) {
-    return get<ApiResponse>(
+    return get(
       '/$_userType/$vendorId/wallet?limit=$limit&sort=$sort',
     ).then(
       (value) {
@@ -705,7 +769,7 @@ class AuthProvider extends GetConnect {
   }
 }
 
-String? getErrorMessage(Response<ApiResponse> response) {
+String? getErrorMessage(Response response) {
   if (kDebugMode) {
     log(' Status Code: ${response.statusCode}');
     log(' Status Text: ${response.statusText}');
@@ -714,16 +778,14 @@ String? getErrorMessage(Response<ApiResponse> response) {
     log(' URL: ${response.request?.url}');
   }
 
-  if (response.statusCode != null &&
-      response.isOk &&
-      (response.body!.status == true || response.body!.error == false)) {
+  if (response.statusCode != null && response.isOk) {
     print('Response is okay: ${response.isOk}');
     return null;
   } else if (response.body == null) {
     // Send Error Locally
     return "Error: Couldn't connect to the internet, check your connection";
-  } else if (response.body!.message != null) {
-    return response.body!.message;
+  } else if (response.body != null) {
+    return response.bodyString;
   } else {
     return 'Something went wrong, please try again later';
   }

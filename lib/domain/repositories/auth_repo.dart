@@ -99,7 +99,6 @@ class AuthRepository {
 
     // save the new password
     if (response != null) {
-
       // Save the password
       AppSharedPrefs.instance.saveObject('credentials',
           UserCredentials(email: user.value.email!, password: newPassword));
@@ -147,14 +146,14 @@ class AuthRepository {
       appDebugMode.value = true;
     }
 
-    final User response = await AuthProvider.value.login(
+    final Token response = await AuthProvider.value.login(
       identifier: identifier,
       password: password,
     );
 
-    user.value = response;
-    final user_data = await AuthProvider.value.fetchUserData();
-    user.value = response.copyWith(data: user_data);
+    user.value = user.value.copyWith(token: response);
+    // final user_data = await AuthProvider.value.fetchUserData();
+    // user.value = response.copyWith(data: user_data);
 
     return Future.value('Success');
   }
@@ -172,6 +171,18 @@ class AuthRepository {
       phone: phone,
     );
   }
+
+  Future<String?> save_contact({
+    required String first_name,
+    required String last_name,
+    required String phone_number,
+  }) =>
+      AuthProvider.value.save_contact(first_name, last_name, phone_number);
+
+  Future<Contacts?> get_contacts() {
+    return AuthProvider.value.get_contacts();
+  }
+
 
   Future<User> fetchUser({String? amount}) async {
     User user = await AuthProvider.value.fetchUser();

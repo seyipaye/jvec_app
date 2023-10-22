@@ -44,7 +44,7 @@ dependencies:
   # enhance_stepper: ^0.1.1
   # equatable: ^2.0.5
   firebase_core: ^2.15.1
-  firebase_messaging: ^14.6.7
+  # firebase_messaging: ^14.6.7
   flutter:
     sdk: flutter
   # flutter_dotenv: ^5.0.2

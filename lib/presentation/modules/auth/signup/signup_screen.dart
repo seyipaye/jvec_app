@@ -57,7 +57,7 @@ class SignupScreen extends GetView<SignupController> {
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
                         AppTextFormField(
-                          label: 'Name',
+                          label: 'First Name',
                           autofillHints: [AutofillHints.name],
                           hintText: 'e.g Avan',
                           onSaved: (val) => controller.name = val!,
@@ -65,7 +65,7 @@ class SignupScreen extends GetView<SignupController> {
                         ),
                         spacer(),
                         AppTextFormField(
-                          label: 'Surname',
+                          label: 'Last Name',
                           autofillHints: [AutofillHints.name],
                           hintText: 'e.g Evan',
                           onSaved: (val) => controller.surname = val!,
@@ -73,7 +73,7 @@ class SignupScreen extends GetView<SignupController> {
                         ),
                         spacer(),
                         AppTextFormField(
-                          label: 'Email Address / username',
+                          label: 'Email Address',
                           autofillHints: [AutofillHints.email],
                           hintText: 'e.g alexushud@gmail.com',
                           onSaved: (val) => controller.email = val!.trim(),
@@ -81,11 +81,11 @@ class SignupScreen extends GetView<SignupController> {
                         ),
                         spacer(),
                         AppTextFormField(
-                          label: 'Phone Number',
+                          label: 'username',
                           autofillHints: [AutofillHints.telephoneNumber],
-                          hintText: 'e.g 08156655622',
+                          hintText: 'e.g shegs',
                           onSaved: (val) => controller.phone = val!.trim(),
-                          validator: Validator.isPhone,
+                          validator: Validator.isNotEmpty,
                         ),
                         spacer(),
                         Obx(() => AppTextFormField(

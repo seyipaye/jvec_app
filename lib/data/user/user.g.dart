@@ -30,7 +30,9 @@ User _$UserFromJson(Map<String, dynamic> json) => User(
       data: json['data'] == null
           ? null
           : UserData.fromJson(json['data'] as Map<String, dynamic>),
-    );
+    )..contacts = (json['contacts'] as List<dynamic>?)
+        ?.map((e) => Contact.fromJson(e as Map<String, dynamic>))
+        .toList();
 
 Map<String, dynamic> _$UserToJson(User instance) => <String, dynamic>{
       'email': instance.email,
@@ -47,17 +49,18 @@ Map<String, dynamic> _$UserToJson(User instance) => <String, dynamic>{
       'profile': instance.profile,
       'surname': instance.surname,
       'token': instance.token,
+      'contacts': instance.contacts,
       'data': instance.data,
     };
 
 Token _$TokenFromJson(Map<String, dynamic> json) => Token(
       json['access_token'] as String,
-      json['token_type'] as String,
+      json['refresh_token'] as String,
     );
 
 Map<String, dynamic> _$TokenToJson(Token instance) => <String, dynamic>{
       'access_token': instance.access_token,
-      'token_type': instance.token_type,
+      'refresh_token': instance.refresh_token,
     };
 
 UserData _$UserDataFromJson(Map<String, dynamic> json) => UserData(
@@ -88,4 +91,16 @@ Map<String, dynamic> _$UserCredentialsToJson(UserCredentials instance) =>
     <String, dynamic>{
       'email': instance.email,
       'password': instance.password,
+    };
+
+Contact _$ContactFromJson(Map<String, dynamic> json) => Contact(
+      json['first_name'] as String,
+      json['last_name'] as String,
+      json['phone_number'] as String,
+    );
+
+Map<String, dynamic> _$ContactToJson(Contact instance) => <String, dynamic>{
+      'first_name': instance.first_name,
+      'last_name': instance.last_name,
+      'phone_number': instance.phone_number,
     };

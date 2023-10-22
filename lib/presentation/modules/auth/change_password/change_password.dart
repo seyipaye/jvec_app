@@ -20,7 +20,7 @@ class ChangePasswordScreen extends GetView<ChangePasswordController> {
     return Scaffold(
       backgroundColor: AppColors.whiteColor,
       appBar: AppBar(
-        title: Text("Change Password"),
+        title: Text("Contact"),
       ),
       body: SafeArea(
         child: Form(

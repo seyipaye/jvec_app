@@ -38,11 +38,6 @@ class SignupController extends GetxController {
     if (form.validate()) {
       form.save();
 
-      // if (agreedToTerms.isFalse) {
-      //   showError('Please read and accept the terms & condition');
-      //   return;
-      // }
-
       showLoadingState;
 
       AuthRepository.instance
@@ -54,15 +49,8 @@ class SignupController extends GetxController {
         phone: phone,
       )
           .then((msg) {
-        // Success
-        if (kIsWeb) {
-          // Web and mobile behaviours are different
-          showMessage(msg, clear: true);
-          Get.offAndToNamed(Routes.login);
-        } else {
-          Get.back();
-          showMessage(msg, clear: true);
-        }
+        Get.back();
+        showMessage(msg, clear: true);
       }).catchError((err, stackTrace) {
         if (err is! String) {
           err = err.toString();

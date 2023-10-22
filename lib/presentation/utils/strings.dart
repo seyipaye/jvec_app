@@ -1,12 +1,12 @@
 import '../../main.dart';
 
 const String stagingDomain =
-    'https://fastlink-mt6m.onrender.com'; //'https://fastlink-pr-2.onrender.com';
+    'https://jvec-backend-solution.onrender.com'; //'https://fastlink-pr-2.onrender.com';
 const String liveDomain =
-    'https://fastlink-mt6m.onrender.com'; //'http://0.0.0.0:4455';
+    'https://jvec-backend-solution.onrender.com'; //'http://0.0.0.0:4455';
 
-const String stagingURL = "$stagingDomain/api/v1";
-const String liveURL = '$liveDomain/api/v1';
+const String stagingURL = "$stagingDomain";
+const String liveURL = '$liveDomain';
 
 class AppStrings {
   // static const String noRouteFound = "No Route Found";

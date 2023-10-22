@@ -4,6 +4,8 @@ import 'package:jvec_app/presentation/modules/auth/password/password_controller.
 import 'package:jvec_app/presentation/modules/auth/change_password/change_password.dart';
 import 'package:jvec_app/presentation/modules/data/purchase_plan/purchase_plan_controller.dart';
 import 'package:jvec_app/presentation/modules/data/purchase_plan/purchase_plan_screen.dart';
+import 'package:jvec_app/presentation/modules/home/contact/contact_controller.dart';
+import 'package:jvec_app/presentation/modules/home/contact/contact_screen.dart';
 import 'package:jvec_app/presentation/modules/profile/profile_screen.dart';
 import 'package:jvec_app/presentation/modules/wallet/card_payment/cards_controller.dart';
 import 'package:jvec_app/presentation/modules/wallet/card_payment/cards_screen.dart';
@@ -45,6 +47,8 @@ class Routes {
   static const passwordOtp = '/passwordOtp';
   static const pinOtp = '/pinOtp';
   static const customerTypeScreen = '/customerTypeScreen';
+
+  static const contact = '/contact';
 
   // Home
   static const home = '/home';
@@ -345,6 +349,14 @@ class AppPages {
     GetPage(
       name: Routes.editProfile,
       page: () => EditProfileScreen(),
+    ),
+    GetPage(
+      name: Routes.contact,
+      page: () => ContactScreen(),
+      middlewares: [EnsureAuthMiddleware()],
+      binding: BindingsBuilder(() {
+        Get.put(ContactController());
+      }),
     ),
   ];
 }

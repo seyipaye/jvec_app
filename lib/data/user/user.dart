@@ -23,6 +23,8 @@ class User {
   String? surname;
 
   Token? token;
+  Contacts? contacts;
+
   UserData? data;
 
   User({
@@ -105,11 +107,11 @@ class User {
 @JsonSerializable()
 class Token {
   String access_token;
-  String token_type;
+  String refresh_token;
 
   Token(
     this.access_token,
-    this.token_type,
+    this.refresh_token,
   );
 
   factory Token.fromJson(Map<String, dynamic> json) => _$TokenFromJson(json);
@@ -135,7 +137,6 @@ class UserData {
   Map<String, dynamic> toJson() => _$UserDataToJson(this);
 }
 
-
 @JsonSerializable()
 class UserCredentials {
   String email;
@@ -149,4 +150,23 @@ class UserCredentials {
   factory UserCredentials.fromJson(Map<String, dynamic> json) =>
       _$UserCredentialsFromJson(json);
   Map<String, dynamic> toJson() => _$UserCredentialsToJson(this);
+}
+
+typedef Contacts = List<Contact>;
+
+@JsonSerializable()
+class Contact {
+  String first_name;
+  String last_name;
+  String phone_number;
+
+  Contact(
+    this.first_name,
+    this.last_name,
+    this.phone_number,
+  );
+
+  factory Contact.fromJson(Map<String, dynamic> json) =>
+      _$ContactFromJson(json);
+  Map<String, dynamic> toJson() => _$ContactToJson(this);
 }

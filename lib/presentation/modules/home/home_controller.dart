@@ -1,14 +1,12 @@
 import 'dart:convert';
 import 'dart:developer';
 
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:jvec_app/core/extentions.dart';
 
 import '../../../core/app_routes.dart';
 import '../../../data/user/user.dart';
-import '../../../domain/providers/local_notification_service.dart';
 import '../../../domain/repositories/auth_repo.dart';
 import '../../utils/constants.dart';
 
@@ -87,41 +85,6 @@ class HomeScreenController extends GetxController {
     });
   }
 
-  void _initNotification() async {
-    //FirebaseAnalytics analytics = FirebaseAnalytics.instance;
-    setupToken();
-    LocalNotificationService.initialize(Get.context!);
-
-    setupInteractedMessage();
-
-    // await FirebaseMessaging.instance.subscribeToTopic('foodelo-customer');
-
-    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-      // Foreground Notification for Android
-
-      RemoteNotification? notification = message.notification;
-      AndroidNotification? android = message.notification?.android;
-
-      log(notification?.toMap().toString() ?? 'No notification');
-      // Sentry.captureMessage(
-      //     notification?.toMap().toString() ?? 'No notification');
-
-      debugPrint(
-          '######### the foreground notification ${message.notification!.title}');
-
-      // If `onMessage` is triggered with a notification, construct our own
-      // local notification to show to users using the created channel.
-      if (notification != null && android != null) {
-        if (message.data != {}) {
-          // AuthRepository.instance.user.value =
-          //     AuthRepository.instance.user.value.copyWith(
-          //         wallet: Wallet.fromJson(jsonDecode(message.data['wallet'])));
-        }
-
-        LocalNotificationService.display(message);
-      }
-    });
-  }
 
   final loading = false.obs;
 
@@ -144,57 +107,6 @@ class HomeScreenController extends GetxController {
 
     // Also handle any interaction when the app is in the background via a
     // Stream listener
-    FirebaseMessaging.onMessageOpenedApp.listen(_handleMessage);
-  }
-
-  Future<void> setupToken() async {
-    // Get the token each time the application loads
-    String? token = await FirebaseMessaging.instance.getToken();
-
-    debugPrint('#### FCM token $token!');
-    // Save the initial token to the database
-    await saveTokenToDatabase(token!);
-
-    // Any time the token refreshes, store this in the database too.
-    FirebaseMessaging.instance.onTokenRefresh.listen(saveTokenToDatabase);
-  }
-
-  Future<void> saveTokenToDatabase(String token) async {
-    // Assume user is logged in for this example
-    try {
-      final response = await AuthRepository.instance.uploadToken(token);
-
-      if (response != null) {
-        debugPrint(response);
-      }
-    } catch (e) {
-      debugPrint(e.toString());
-    }
-  }
-
-  void _handleMessage(RemoteMessage message) {
-    debugPrint('How messsssshgete he');
-    log('Handle notification tap: ${message.toMap().toString()}');
-
-    if (message.data['type'] == 'order') {
-      Get.toNamed(Routes.orderSummary, arguments: message.data['orderId']);
-    } else if (message.data['type'] == 'transaction') {
-      Get.toNamed(Routes.wallet);
-    } else if (message.data['type'] == 'chat-conversation') {
-      // final convo = Conversations(
-      //     riderId: RiderId(
-      //         id: '638de3ef31340c5b655bd580',
-      //         firstName: message.data['senderName'],
-      //         image: message.data['image']),
-      //     user: 'Customer',
-      //     userId: UserId(iid: AppDrawerController.instance.userId.value));
-      // Get.put(CommunicationController());
-
-      // Get.toNamed(Routes.chatBox, arguments: [convo, message.data['phone']]);
-    } else {
-      return;
-      //Get.toNamed(Routes.notifications);
-    }
   }
 
   Future<void> fetchHomeDetailPage() async {
